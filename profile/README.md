@@ -1,4 +1,8 @@
-# Preskok
+<p align="center">
+  <a href="https://preskok.si">
+    <img src="https://preskok.si/wp-content/uploads/2025/05/Logo_Preskok-1.svg" alt="Preskok logo" width="240" />
+  </a>
+</p>
 
 Preskok is an automotive solutions company building the bridge between **vehicle commerce**, **logistics**, **documentation workflows**, and **software innovation**.
 
