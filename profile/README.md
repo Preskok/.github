@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://preskok.si" target="_blank">
-    <img src="https://preskok.si/wp-content/uploads/2025/05/Logo_Preskok-1.svg" alt="Preskok logo" width="240" />
+    <img src="./preskok-logo.svg" alt="Preskok logo" width="240" />
   </a>
 </p>
 
