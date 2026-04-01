@@ -1,45 +1,36 @@
 <p align="center">
-  <a href="https://preskok.si">
+  <a href="https://preskok.si" target="_blank">
     <img src="https://preskok.si/wp-content/uploads/2025/05/Logo_Preskok-1.svg" alt="Preskok logo" width="240" />
   </a>
 </p>
 
-Preskok is an automotive solutions company building the bridge between **vehicle commerce**, **logistics**, **documentation workflows**, and **software innovation**.
+# Hey, we’re Preskok 👋
 
-With 20+ years of experience in the automotive industry, we help partners move faster and operate smarter through a connected set of services:
+We build software for automotive businesses.
 
-- vehicle sourcing and B2B trading
-- transport and logistics coordination
-- documentation and compliance workflows
-- custom software and R&D through **ThinkTank**
+At Preskok, operations and engineering work side by side. Through **ThinkTank**, we create tools, automations, integrations, and platforms that support vehicle commerce, logistics, documentation, and data-heavy workflows.
 
-## ThinkTank
+## What that looks like
 
-ThinkTank is Preskok’s R&D backbone.
+- software for real operational workflows
+- integrations between systems, providers, and data sources
+- automation of repetitive processes
+- products built around actual business needs
+- engineering close to the people using the tools
 
-We create practical, scalable software solutions for real-world automotive operations — from workflow automation to custom platforms powered by robust data models and in-house technology.
+## Why it matters
 
-## Why Preskok
+This isn’t software built in isolation.
 
-- Deep automotive domain expertise
-- Data-first thinking
-- Connected operational and software capabilities
-- Built for long-term partnerships
+We work on systems that help real teams make decisions faster, process vehicles more efficiently, reduce manual work, and keep complex operations moving.
 
-## Company highlights
+## Join us
 
-- 150M+ unique vehicles processed
-- 150K+ vehicles sold
-- 36+ car brands
-- 290+ logistics partners
-- 3,000+ partners
-- 1,000+ documents scanned daily
-- €200M+ annual turnover
+If you like practical engineering, meaningful products, and solving business-heavy problems with code, check out our careers page:
 
-## Headquarters
+[Open roles at Preskok](https://preskok.si/en/careers/#open-roles)
 
-Ljubljana, Slovenia
+## Links
 
-## Website
-
-**preskok.si**
+- [Website](https://preskok.si/)
+- [Careers](https://preskok.si/en/careers/#open-roles)
