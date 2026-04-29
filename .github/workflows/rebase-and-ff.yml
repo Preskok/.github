@@ -1,0 +1,148 @@
+name: Rebase and fast-forward merge
+
+on:
+  issue_comment:
+    types: [created]
+
+  pull_request_target:
+    types: [labeled]
+
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Pull request number"
+        required: true
+        type: string
+
+      mode:
+        description: "Mode: auto, sync, or force-rebase"
+        required: false
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - sync
+          - force-rebase
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  resolve-command:
+    name: Resolve command
+    runs-on: ubuntu-latest
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        (
+          startsWith(github.event.comment.body, '/finish-pr') ||
+          startsWith(github.event.comment.body, '/sync-pr') ||
+          startsWith(github.event.comment.body, '/rebase-pr') ||
+          startsWith(github.event.comment.body, '/ff-force-rebase') ||
+          startsWith(github.event.comment.body, '/ff-sync') ||
+          startsWith(github.event.comment.body, '/ff')
+        )
+      ) ||
+      (
+        github.event_name == 'pull_request_target' &&
+        github.event.action == 'labeled' &&
+        (
+          github.event.label.name == 'finish-pr' ||
+          github.event.label.name == 'sync-pr' ||
+          github.event.label.name == 'rebase-pr'
+        )
+      )
+
+    outputs:
+      pr_number: ${{ steps.resolve.outputs.pr_number }}
+      command_user: ${{ steps.resolve.outputs.command_user }}
+      triggered_by_comment: ${{ steps.resolve.outputs.triggered_by_comment }}
+      mode: ${{ steps.resolve.outputs.mode }}
+
+    steps:
+      - name: Resolve PR number and mode
+        id: resolve
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "pr_number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
+            echo "command_user=${{ github.actor }}" >> "$GITHUB_OUTPUT"
+            echo "triggered_by_comment=false" >> "$GITHUB_OUTPUT"
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
+            echo "pr_number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "command_user=${{ github.actor }}" >> "$GITHUB_OUTPUT"
+            echo "triggered_by_comment=false" >> "$GITHUB_OUTPUT"
+
+            LABEL="${{ github.event.label.name }}"
+
+            case "$LABEL" in
+              rebase-pr)
+                echo "mode=force-rebase" >> "$GITHUB_OUTPUT"
+                ;;
+
+              sync-pr)
+                echo "mode=sync" >> "$GITHUB_OUTPUT"
+                ;;
+
+              finish-pr)
+                echo "mode=auto" >> "$GITHUB_OUTPUT"
+                ;;
+
+              *)
+                echo "Unsupported label: $LABEL"
+                exit 1
+                ;;
+            esac
+
+            exit 0
+          fi
+
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            COMMENT="${{ github.event.comment.body }}"
+
+            echo "pr_number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+            echo "command_user=${{ github.event.comment.user.login }}" >> "$GITHUB_OUTPUT"
+            echo "triggered_by_comment=true" >> "$GITHUB_OUTPUT"
+
+            case "$COMMENT" in
+              /rebase-pr*|/ff-force-rebase*)
+                echo "mode=force-rebase" >> "$GITHUB_OUTPUT"
+                ;;
+
+              /sync-pr*|/ff-sync*)
+                echo "mode=sync" >> "$GITHUB_OUTPUT"
+                ;;
+
+              /finish-pr*|/ff*)
+                echo "mode=auto" >> "$GITHUB_OUTPUT"
+                ;;
+
+              *)
+                echo "Unsupported command: $COMMENT"
+                exit 1
+                ;;
+            esac
+
+            exit 0
+          fi
+
+  run-reusable-workflow:
+    name: Run reusable merge workflow
+    needs: resolve-command
+    uses: Preskok/github-actions/.github/workflows/rebase-and-ff.yml@master
+    with:
+      pr_number: ${{ needs.resolve-command.outputs.pr_number }}
+      command_user: ${{ needs.resolve-command.outputs.command_user }}
+      triggered_by_comment: ${{ needs.resolve-command.outputs.triggered_by_comment == 'true' }}
+      mode: ${{ needs.resolve-command.outputs.mode }}
+    secrets: inherit
